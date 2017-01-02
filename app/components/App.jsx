@@ -1,24 +1,43 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const axios = require('axios');
-
+const Dropzone = require('./Dropzone.jsx');
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      pendingFiles: []
+      pendingFiles: [],
+      curPending: null
     };
 
     this.handlePhase1 = this.handlePhase1.bind(this);
+    this.getPendingFiles = this.getPendingFiles.bind(this);
+    this.pendingChange = this.pendingChange.bind(this);
+    this.getPendingFiles();
+  }
+
+  pendingChange(e) {
+    console.log(e.target.value);
+    this.setState({
+      curPending: e.target.value
+    });
   }
 
   getPendingFiles() {
-    
+    const context = this;
+    axios.get('/pending')
+    .then(function(resp) {
+      context.setState({
+        pendingFiles: resp.data,
+        curPending: resp.data[0].filename || null
+      });
+    });
   }
 
   handlePhase1(e) {
     e.preventDefault();
+    const context = this;
     var filename = document.getElementById('filename').value;
     if(filename === '') {
       alert('Please enter a filename.');
@@ -44,8 +63,8 @@ class App extends React.Component {
       tags: tags
     })
     .then(function(resp) {
-      console.log(resp);
-      alert(resp);
+      context.getPendingFiles();
+      alert('Phase 1 complete. Select your file below to complete Phase 2.');
     });
   }
 
@@ -65,9 +84,21 @@ class App extends React.Component {
             Description: <input id="description" type="text"></input><br/>
             Tags: <input id="tags" type="text"></input><br/>
             <button type="submit">Submit Phase 1</button>
-          </form>
+          </form><br/>
 
           Phase 2:
+          Choose a pending file: <select id="pending" onChange={this.pendingChange}>
+            {this.state.pendingFiles.map(function(pendingFile) {
+              return (
+                  <option value={pendingFile.filename + pendingFile.filetype}>{pendingFile.filename + pendingFile.filetype}</option>
+                );
+            })}
+          </select><br/>
+          {this.state.curPending === null ? null : 
+            <form onSubmit={this.handlePhase2}>
+              <Dropzone filename={this.state.curPending}/>
+            </form>
+          }
         </div>
       )
   }
