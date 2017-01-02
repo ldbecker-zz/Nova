@@ -9,10 +9,11 @@ router.get('/', function(req, res, next) {
 router.post('/phase1', function(req, res, next) {
   console.log(models.File);
   models.File.create({
-    description: 'Hello',
-    tags: 'Sup',
-    filename: 'filename',
-    filetype: 'filetype'
+    description: req.body.description,
+    tags: req.body.tags,
+    filename: req.body.filename,
+    filetype: req.body.filetype,
+    status: 'pending'
   }).then(function(resp) {
     console.log(resp);
     res.status(200).send(resp);

@@ -7,15 +7,42 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      phase1: true
+      pendingFiles: []
     };
 
     this.handlePhase1 = this.handlePhase1.bind(this);
   }
 
+  getPendingFiles() {
+    
+  }
+
   handlePhase1(e) {
     e.preventDefault();
-    axios.post('/phase1', {stuff:'stuff'})
+    var filename = document.getElementById('filename').value;
+    if(filename === '') {
+      alert('Please enter a filename.');
+      return;
+    }
+    var filetype = document.getElementById('filetype').value;
+    var description = document.getElementById('description').value;
+    if(description === '') {
+      alert('Please enter a description.');
+      return;
+    }
+    var tags = document.getElementById('tags').value;
+    if(tags === '') {
+      alert('Please enter tags.');
+      return;
+    }
+
+
+    axios.post('/phase1', {
+      filename: filename,
+      filetype: filetype,
+      description: description,
+      tags: tags
+    })
     .then(function(resp) {
       console.log(resp);
       alert(resp);
@@ -25,11 +52,22 @@ class App extends React.Component {
   render() {
     return (
         <div>
-          Hello!
 
+          Phase 1:<br/>
           <form onSubmit={this.handlePhase1}>
+            Filename: <input id="filename" type="text"></input><br/>
+            Filetype: <select id="filetype">
+              <option value=".txt">.txt</option>
+              <option value=".js">.js</option>
+              <option value=".jsx">.jsx</option>
+              <option value=".json">.json</option>
+            </select><br/>
+            Description: <input id="description" type="text"></input><br/>
+            Tags: <input id="tags" type="text"></input><br/>
             <button type="submit">Submit Phase 1</button>
           </form>
+
+          Phase 2:
         </div>
       )
   }
