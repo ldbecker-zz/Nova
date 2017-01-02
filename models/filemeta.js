@@ -1,9 +1,9 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var FileMeta = sequelize.define('FileMeta', {
-    linecount: DataTypes.INT,
-    filesize: DataTypes.INT,
-    fileid: DataTypes.INT
+    linecount: DataTypes.INTEGER,
+    filesize: DataTypes.INTEGER,
+    fileid: DataTypes.INTEGER
   }, {
     classMethods: {
       associate: function(models) {
