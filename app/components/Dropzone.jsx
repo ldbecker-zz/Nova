@@ -5,6 +5,13 @@ const axios = require('axios');
 
 var Dropzone = React.createClass({
 
+  getInitialState: function() {
+    return {
+      filename: this.props.filename,
+      fileid: this.props.fileid
+    };
+  },
+
   componentWillReceiveProps: function(nextProps) {
     console.log('DZ PROPS', nextProps);
     this.setState({
@@ -42,7 +49,7 @@ var Dropzone = React.createClass({
       .send(fileData)
       .end(function(err, resp) {
         if(err) {console.error(err);}
-        console.log(resp);
+        alert('Phase 2 complete. To view file details, hit the refresh button then select it below.');
         return resp;
       });
   }

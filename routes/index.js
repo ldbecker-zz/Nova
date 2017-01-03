@@ -11,6 +11,21 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Nova Challenge' });
 });
 
+router.get('/data/:id', function(req, res, next) {
+  console.log(Number(req.params.id));
+  models.FileMeta.findOne({
+    where: {
+      fileid: Number(req.params.id)
+    }
+  }).then(function(resp) {
+    console.log(resp);
+    res.status(200).send(resp);
+  }).catch(function(err) {
+    console.log(err);
+    res.status(500).send(err);
+  })
+})
+
 router.post('/phase1', function(req, res, next) {
   models.File.create({
     description: req.body.description,
@@ -76,6 +91,18 @@ router.get('/pending', function(req, res, next) {
     console.log(err);
     res.status(500).send(err);
   })
+});
+
+router.get('/uploaded', function(req, res, next) {
+  models.File.findAll({
+    where: {
+      status: 'uploaded'
+    }
+  }).then(function(resp) {
+    res.status(200).send(resp);
+  }).catch(function(err) {
+    res.status(500).send(err);
+  });
 });
 
 router.post('/uploadHandler', upload.single('file'), function(req, res) {

@@ -2,6 +2,8 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const axios = require('axios');
 const Dropzone = require('./Dropzone.jsx');
+const CompletedFile = require('./CompletedFile.jsx');
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -9,13 +11,38 @@ class App extends React.Component {
     this.state = {
       pendingFiles: [],
       curPending: null,
-      curPendingID: null
+      curPendingID: null,
+      uploadedFiles: [],
+      curCompleted: null,
+      curCompletedID: null
     };
 
     this.handlePhase1 = this.handlePhase1.bind(this);
     this.getPendingFiles = this.getPendingFiles.bind(this);
     this.pendingChange = this.pendingChange.bind(this);
+    this.getUploadedFiles = this.getUploadedFiles.bind(this);
+    this.uploadedChange = this.uploadedChange.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
     this.getPendingFiles();
+    this.getUploadedFiles();
+  }
+
+  uploadedChange(e) {
+    this.setState({
+      curCompleted: JSON.parse(e.target.value)
+    });
+  }
+
+  getUploadedFiles() {
+    const context = this;
+    axios.get('/uploaded')
+    .then(function(resp) {
+      console.log(resp);
+      context.setState({
+        uploadedFiles: resp.data,
+        curCompleted: resp.data[0] || null
+      });
+    });
   }
 
   pendingChange(e) {
@@ -31,8 +58,8 @@ class App extends React.Component {
     .then(function(resp) {
       context.setState({
         pendingFiles: resp.data,
-        curPending: resp.data[0].filename || null,
-        curPendingID: resp.data[0].id || null
+        curPending: resp.data[0] ? resp.data[0].filename + resp.data[0].filetype : null,
+        curPendingID: resp.data[0] ? resp.data[0].id : null
       });
     });
   }
@@ -70,10 +97,18 @@ class App extends React.Component {
     });
   }
 
+  handleRefresh(e) {
+    e.preventDefault();
+    this.getPendingFiles();
+    this.getUploadedFiles();
+  }
+
   render() {
     return (
         <div>
-
+          <form onSubmit={this.handleRefresh}>
+            <button type="submit">Refresh</button>
+          </form><br/>
           Phase 1:<br/>
           <form onSubmit={this.handlePhase1}>
             Filename: <input id="filename" type="text"></input><br/>
@@ -100,6 +135,18 @@ class App extends React.Component {
             <form onSubmit={this.handlePhase2}>
               <Dropzone filename={this.state.curPending} fileid={this.state.curPendingID}/>
             </form>
+          }
+          <br/>
+          Uploaded Files:
+          Choose an uploaded file: <select id="uploaded" onChange={this.uploadedChange}>
+            {this.state.uploadedFiles.map(function(uploadedFile) {
+              return (
+                  <option value={JSON.stringify(uploadedFile)}>{uploadedFile.filename + uploadedFile.filetype}</option>
+                );
+            })}
+          </select><br/>
+          {this.state.curCompleted === null ? null :
+            <CompletedFile fileobj={this.state.curCompleted}/>
           }
         </div>
       )
