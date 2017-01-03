@@ -18,10 +18,8 @@ router.get('/data/:id', function(req, res, next) {
       fileid: Number(req.params.id)
     }
   }).then(function(resp) {
-    console.log(resp);
     res.status(200).send(resp);
   }).catch(function(err) {
-    console.log(err);
     res.status(500).send(err);
   })
 })
@@ -34,10 +32,8 @@ router.post('/phase1', function(req, res, next) {
     filetype: req.body.filetype,
     status: 'pending'
   }).then(function(resp) {
-    console.log(resp);
     res.status(200).send(resp);
   }).catch(function(err) {
-    console.log(err);
     res.status(500).send(err);
   });
 });
@@ -62,7 +58,6 @@ router.post('/phase2', function(req, res, next) {
       filesize: req.body.size,
       fileid: req.body.fileid
     }).then(function(resp) {
-      console.log(resp);
       models.File.update(
         {status: 'uploaded'},
         {where: {
@@ -72,7 +67,6 @@ router.post('/phase2', function(req, res, next) {
         res.status(200).send(resp);
       });
     }).catch(function(err) {
-      console.log(err);
       res.status(500).send(err);
     });
   });
@@ -85,10 +79,8 @@ router.get('/pending', function(req, res, next) {
       status: 'pending'
     }
   }).then(function(resp) {
-    console.log(resp);
     res.status(200).send(resp);
   }).catch(function(err) {
-    console.log(err);
     res.status(500).send(err);
   })
 });
@@ -116,7 +108,6 @@ router.post('/uploadHandler', upload.single('file'), function(req, res) {
       .send({filename: fileName, filepath: filePath, size: size, fileid: fileid})
       .end(function(err, resp) {
         if(err) {console.error(err);}
-        console.log(resp.body);
         res.status(200).send(resp.body);
         return resp;
       });
