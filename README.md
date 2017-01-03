@@ -1,9 +1,9 @@
 # Nova
 
 To Run:
-1) clone repo
-2) in root directory of repo: npm install
-3) Create a local mysql database instance with the following:
+- 1) clone repo
+- 2) in root directory of repo: npm install
+- 3) Create a local mysql database instance with the following:
 	username: nova
 	password: nova
 	database name: nova
@@ -21,6 +21,7 @@ Reasoning:
 	-I used mysql. After creating the local database instance I used the sequelize-cli to create my models. I then ran a database migration to create my tables, and again later modify the schema of my phase1 table. 
 3) Create the endpoints
 	-Phase1: I first created a react front end for receiving input. What this endpoint does is create an entry into the phase1 File database with the user specified file name, extension, tags and description.
+
 	-Phase2: Phase 2 is only accessible to the user once there is a file that has completed the phase1 data upload. I first created a route to get all files waiting to be uploaded, which is then populated into a selector. To upload a file, first select a filename from the dropdown. Then click on the dropzone component to select a file, or drag the file onto the component. The file is first uploaded onto the server via the /uploadHandler route. The /uploadHandler route then calls the actual /phase2 route. The line count of the file is done at this point, and the meta data is inserted into the phase2 FileMeta table.
 	-data/:id : This route is called via the CompletedFile component, which is used for viewing the info of an uploaded file. The entire File entry is loaded into the component (not ideal, I know) and this route is called where :id is the id of the entry passed into the component. What this route does is get the metadata for a given uploaded file's id. 
 4) Test-Suite
