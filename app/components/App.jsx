@@ -8,7 +8,8 @@ class App extends React.Component {
 
     this.state = {
       pendingFiles: [],
-      curPending: null
+      curPending: null,
+      curPendingID: null
     };
 
     this.handlePhase1 = this.handlePhase1.bind(this);
@@ -18,9 +19,9 @@ class App extends React.Component {
   }
 
   pendingChange(e) {
-    console.log(e.target.value);
     this.setState({
-      curPending: e.target.value
+      curPending: JSON.parse(e.target.value).filename,
+      curPendingID: JSON.parse(e.target.value).fileid
     });
   }
 
@@ -30,7 +31,8 @@ class App extends React.Component {
     .then(function(resp) {
       context.setState({
         pendingFiles: resp.data,
-        curPending: resp.data[0].filename || null
+        curPending: resp.data[0].filename || null,
+        curPendingID: resp.data[0].id || null
       });
     });
   }
@@ -90,13 +92,13 @@ class App extends React.Component {
           Choose a pending file: <select id="pending" onChange={this.pendingChange}>
             {this.state.pendingFiles.map(function(pendingFile) {
               return (
-                  <option value={pendingFile.filename + pendingFile.filetype}>{pendingFile.filename + pendingFile.filetype}</option>
+                  <option value={JSON.stringify({filename: pendingFile.filename + pendingFile.filetype, fileid: pendingFile.id})}>{pendingFile.filename + pendingFile.filetype}</option>
                 );
             })}
           </select><br/>
           {this.state.curPending === null ? null : 
             <form onSubmit={this.handlePhase2}>
-              <Dropzone filename={this.state.curPending}/>
+              <Dropzone filename={this.state.curPending} fileid={this.state.curPendingID}/>
             </form>
           }
         </div>

@@ -1,13 +1,15 @@
 const React = require('react');
 const DropzoneComponent = require('react-dropzone');
 const request = require('superagent');
+const axios = require('axios');
 
 var Dropzone = React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
     console.log('DZ PROPS', nextProps);
     this.setState({
-      filename: nextProps.filename
+      filename: nextProps.filename,
+      fileid: nextProps.fileid
     });
   },
 
@@ -32,7 +34,7 @@ var Dropzone = React.createClass({
     }
     const context = this;
     var fileData = new FormData();
-    var options = JSON.stringify({fileName: file[0].name});
+    var options = JSON.stringify({fileName: file[0].name, size:file[0].size, fileid: this.state.fileid});
     fileData.append('file', file[0]);
     fileData.append('opts', options);
 
