@@ -37,7 +37,6 @@ class App extends React.Component {
     const context = this;
     axios.get('/uploaded')
     .then(function(resp) {
-      console.log(resp);
       context.setState({
         uploadedFiles: resp.data,
         curCompleted: resp.data[0] || null

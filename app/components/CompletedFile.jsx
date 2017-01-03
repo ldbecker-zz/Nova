@@ -13,7 +13,6 @@ class CompletedFile extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('CF PROPS', nextProps);
     this.setState({
       fileobj: nextProps.fileobj
     });
@@ -26,7 +25,6 @@ class CompletedFile extends React.Component {
     const context = this;
     axios.get('/data/' + fileid)
     .then(function(resp) {
-      console.log(resp.data);
       context.setState({
         filemetaobj: resp.data
       });

@@ -13,7 +13,6 @@ var Dropzone = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    console.log('DZ PROPS', nextProps);
     this.setState({
       filename: nextProps.filename,
       fileid: nextProps.fileid
